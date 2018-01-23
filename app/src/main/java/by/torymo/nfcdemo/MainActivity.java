@@ -16,6 +16,11 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
+import by.torymo.nfcdemo.ndefparse.NdefMessageParser;
+import by.torymo.nfcdemo.ndefparse.ParsedNdefRecord;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView tvNfcStatus;
@@ -72,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 byte[] empty = new byte[0];
                 byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-                Tag tag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 byte[] payload = dumpTagData(tag).getBytes();
                 NdefRecord record = new NdefRecord(NdefRecord.TNF_UNKNOWN, empty, id, payload);
                 NdefMessage msg = new NdefMessage(new NdefRecord[] {record});
@@ -88,14 +93,14 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         StringBuilder builder = new StringBuilder();
-//        List<ParsedNdefRecord> records = NdefMessageParser.parse(msgs[0]);
-//        final int size = records.size();
-//
-//        for (int i = 0; i < size; i++) {
-//            ParsedNdefRecord record = records.get(i);
-//            String str = record.str();
-//            builder.append(str).append("\n");
-//        }
+        List<ParsedNdefRecord> records = NdefMessageParser.parse(msgs[0]);
+        final int size = records.size();
+
+        for (int i = 0; i < size; i++) {
+            ParsedNdefRecord record = records.get(i);
+            String str = record.str();
+            builder.append(str).append("\n");
+        }
 
         tvNfcStatus.setText(builder.toString());
     }
